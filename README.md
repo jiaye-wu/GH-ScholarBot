@@ -1,4 +1,4 @@
-# GoogleScholarCrawler-4-GitHubPages
+# GH-ScholarBot: Google Scholar Crawler for GitHub Pages
 
 A Google Scholar Crawler for GitHub Pages decoupled from [AcadHomepage](https://github.com/RayeRen/acad-homepage.github.io) jekyll theme, with **added features** of *i10-index* and *h-index* caching.
 
