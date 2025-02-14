@@ -1,10 +1,10 @@
 # GH-ScholarBot: Google Scholar Crawler for GitHub Pages
 
-A Google Scholar Crawler for GitHub Pages decoupled from [AcadHomepage](https://github.com/RayeRen/acad-homepage.github.io) jekyll theme, with **added features** of *i10-index* and *h-index* caching.
+A Google Scholar Crawler for GitHub Pages decoupled from [AcadHomepage](https://github.com/RayeRen/acad-homepage.github.io) jekyll theme, with **added features** of *i10-index* and *h-index* caching, and **improved usability**.
 
-## Info about the crawler
+## About the crawler
 
-This crawler is decoupled from [AcadHomepage](https://github.com/RayeRen/acad-homepage.github.io) and it works well with [Academic Pages](https://github.com/academicpages/academicpages.github.io) (personally tested).
+This distribution of Google Scholar crawler is originally extracted from [AcadHomepage](https://github.com/RayeRen/acad-homepage.github.io) theme and now maintined by [me](https://github.com/jiaye-wu). It works well with [Academic Pages](https://github.com/academicpages/academicpages.github.io), [al-folio](https://github.com/alshedivat/al-folio), and [multi-language-al-folio](https://github.com/george-gca/multi-language-al-folio) (personally tested).
 
 My modifications to the original version are adding the cached data for *i10-index* and *h-index* individually so that one can easily cite the data without digging through ```gs_data.json```.
 
