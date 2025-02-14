@@ -7,8 +7,5 @@
 # server process.
 
 # Basic Site Settings
-locale                   : "en-US"
-name                     : &name "Jiaye Wu"
-repository               : "jiaye-wu/jiaye-wu.github.io"
-google_scholar_stats_use_cdn : True
-
+repository: "jiaye-wu/GH-ScholarBot" # change the first section to your GitHub user name.
+google_scholar_stats_use_cdn: true

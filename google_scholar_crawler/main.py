@@ -14,20 +14,20 @@ os.makedirs('results', exist_ok=True)
 with open(f'results/gs_data.json', 'w') as outfile:
     json.dump(author, outfile, ensure_ascii=False)
 
-shieldio_data = {
+citation_data = {
   "schemaVersion": 1,
   "label": "citations",
   "message": f"{author['citedby']}",
 }
-with open(f'results/gs_data_shieldsio.json', 'w') as outfile:
-    json.dump(shieldio_data, outfile, ensure_ascii=False)
+with open(f'results/gs_data_total_citation.json', 'w') as outfile:
+    json.dump(citation_data, outfile, ensure_ascii=False)
 
 hindex_data = {
   "schemaVersion": 1,
   "label": "h-index",
   "message": f"{author['hindex']}",
 }
-with open(f'results/gs_data_hindex.json', 'w') as outfile:
+with open(f'results/gs_data_h_index.json', 'w') as outfile:
     json.dump(hindex_data, outfile, ensure_ascii=False)
 
 i10_data = {
@@ -35,5 +35,5 @@ i10_data = {
   "label": "i10-index",
   "message": f"{author['i10index']}",
 }
-with open(f'results/gs_data_i10.json', 'w') as outfile:
+with open(f'results/gs_data_i10_index.json', 'w') as outfile:
     json.dump(i10_data, outfile, ensure_ascii=False)
