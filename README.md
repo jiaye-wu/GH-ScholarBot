@@ -27,6 +27,8 @@ The benefits of this cawler version include:
 
 Your Google Scholar data is automatically fetched at UTC 8:00 every day.
 
+**Today's fetch:** [![Get Citation Data](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler.yaml/badge.svg?branch=main)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler.yaml)
+
 ## Implementation
 
 ### Option 1: installation inside website
