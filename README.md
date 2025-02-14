@@ -106,7 +106,7 @@ To use it **in your `.md` file** for your website pages:
 
 **To change in the following codes:** `<your-github-user-name>` and `GOOGLE_SCHOLAR_ID`
 
-**Note:** the codes below is different than **Option 1**. It uses data under `github.com/<your-github-user-name>/GH-ScholarBot/` other than `github.com/<your-github-user-name>/<your-github-user-name>.github.io/`.
+**Note:** the codes below is different from **Option 1**. It uses data under `github.com/<your-github-user-name>/GH-ScholarBot/` other than `github.com/<your-github-user-name>/<your-github-user-name>.github.io/`.
 
 #### For **Google Scholar citation badge** 
 
