@@ -11,7 +11,7 @@ My modifications to the original version are adding the cached data for *i10-ind
 The benefits of this cawler version include:
 
 1. **cached data**: avoid querying Google Scholar too frequently to encounter HTTP error code 429 "too many requests" which slows down local website building and stops GitHub Pages auto-deployment.
-2. **optimized access**: use CDN to have better GS data access in special Internet enviroment like in China.
+2. **optimized access**: use CDN (in `_config.yml` set `google_scholar_stats_use_cdn` to `true`) to have better GS data access in special Internet enviroments with censorship and delay.
 3. **easy deployment**: fork, fill in your info, and play.
 
 ## Appearance preview
@@ -46,24 +46,48 @@ You can **merge** this repo with (inside) your GitHub Pages website:
 
 To use it **in your `.md` file** for your website pages:
 
-**To change in the following codes:** `<your-github-user-name>`
+**To change in the following codes:** `<your-github-user-name>` and `GOOGLE_SCHOLAR_ID`
 
-#### For **Google Scholar citation badge** 
+#### For **Google Scholar citation badge**
+
+Use CDN for GitHub (delays in data-refresh might exist):
 
 ```
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2F<your-github-user-name>%2F<your-github-user-name>.github.io@google-scholar-stats%2Fgs_data_total_citation.json&labelColor=f6f6f6&color=9cf&style=flat&label=citations"></a>
 ```
 
+Use GitHub.com:
+
+```
+<a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2F<your-github-user-name>.github.io@google-scholar-stats%2Fgs_data_total_citation.json&labelColor=f6f6f6&color=9cf&style=flat&label=citations"></a>
+```
+
 #### For **Google Scholar h-index badge** 
+
+Use CDN for GitHub (delays in data-refresh might exist):
 
 ```
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2F<your-github-user-name>%2F<your-github-user-name>.github.io@google-scholar-stats%2Fgs_data_h_index.json&labelColor=f6f6f6&color=9cf&style=flat&label=h-index"></a>
 ```
 
+Use GitHub.com:
+
+```
+<a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2F<your-github-user-name>.github.io@google-scholar-stats%2Fgs_data_h_index.json&labelColor=f6f6f6&color=9cf&style=flat&label=h-index"></a>
+```
+
 #### For **Google Scholar i10-index badge** 
+
+Use CDN for GitHub (delays in data-refresh might exist):
 
 ```
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2F<your-github-user-name>%2F<your-github-user-name>.github.io@google-scholar-stats%2Fgs_data_i10index.json&labelColor=f6f6f6&color=9cf&style=flat&label=i10-index"></a>
+```
+
+Use GitHub.com:
+
+```
+<a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2F<your-github-user-name>.github.io@google-scholar-stats%2Fgs_data_i10index.json&labelColor=f6f6f6&color=9cf&style=flat&label=i10-index"></a>
 ```
 
 ### Option 2: standalone installation
@@ -80,26 +104,50 @@ You can **fork** this repo into your own GitHub account, for example `github.com
 
 To use it **in your `.md` file** for your website pages:
 
-**To change in the following codes:** `<your-github-user-name>`
+**To change in the following codes:** `<your-github-user-name>` and `GOOGLE_SCHOLAR_ID`
 
 **Note:** the codes below is different than **Option 1**. It uses data under `github.com/<your-github-user-name>/GH-ScholarBot/` other than `github.com/<your-github-user-name>/<your-github-user-name>.github.io/`.
 
 #### For **Google Scholar citation badge** 
 
+Use CDN for GitHub (delays in data-refresh might exist):
+
 ```
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2F<your-github-user-name>%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_total_citation.json&labelColor=f6f6f6&color=9cf&style=flat&label=citations"></a>
 ```
 
+Use GitHub.com:
+
+```
+<a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_total_citation.json&labelColor=f6f6f6&color=9cf&style=flat&label=citations"></a>
+```
+
 #### For **Google Scholar h-index badge** 
+
+Use CDN for GitHub (delays in data-refresh might exist):
 
 ```
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2F<your-github-user-name>%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_h_index.json&labelColor=f6f6f6&color=9cf&style=flat&label=h-index"></a>
 ```
 
+Use GitHub.com:
+
+```
+<a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_h_index.json&labelColor=f6f6f6&color=9cf&style=flat&label=h-index"></a>
+```
+
 #### For **Google Scholar i10-index badge** 
+
+Use CDN for GitHub (delays in data-refresh might exist):
 
 ```
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2F<your-github-user-name>%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_i10index.json&labelColor=f6f6f6&color=9cf&style=flat&label=i10-index"></a>
+```
+
+Use GitHub.com:
+
+```
+<a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_i10index.json&labelColor=f6f6f6&color=9cf&style=flat&label=i10-index"></a>
 ```
 
 ## All your other citation data for each paper

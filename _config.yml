@@ -8,4 +8,4 @@
 
 # Basic Site Settings
 repository: "jiaye-wu/GH-ScholarBot" # change the first section to your GitHub user name.
-google_scholar_stats_use_cdn: true
+google_scholar_stats_use_cdn: true # true: use CDN, delay might occur. false: use GitHub.com.
