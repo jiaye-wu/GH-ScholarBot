@@ -90,7 +90,7 @@ Use GitHub.com:
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2F<your-github-user-name>.github.io@google-scholar-stats%2Fgs_data_i10index.json&labelColor=f6f6f6&color=9cf&style=flat&label=i10-index"></a>
 ```
 
-### Option 2: standalone installation
+### Option 2: Standalone installation
 
 You can **fork** this repo into your own GitHub account, for example `github.com/<your-github-user-name>/GH-ScholarBot/`
 
