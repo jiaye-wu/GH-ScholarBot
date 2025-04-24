@@ -11,7 +11,7 @@ My modifications to the original version are adding the cached data for *i10-ind
 The benefits of this cawler version include:
 
 1. **cached data**: avoid querying Google Scholar too frequently to encounter HTTP error code 429 "too many requests" which slows down local website building and stops GitHub Pages auto-deployment.
-2. **optimized access**: use CDN (in `_config.yml` set `google_scholar_stats_use_cdn` to `true`) to have better GS data access in special Internet enviroments with censorship and delay.
+2. **optimized access**: use CDN (in `_config.yml` set `google_scholar_stats_use_cdn` to `true`) to have better GS data access to in special Internet enviroments with censorship and delay. CDN also avoids `domain blocked` error from GitHub.com when there are too many refreshes. 
 3. **easy deployment**: fork, fill in your info, and play.
 
 ## Appearance preview
@@ -20,7 +20,7 @@ The benefits of this cawler version include:
 
 **h-index:** <a href='https://scholar.google.com/citations?user=D2n8tswAAAAAJ'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fjiaye-wu%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_h_index.json&labelColor=f6f6f6&color=9cf&style=flat&label=h-index"></a>
 
-**i10-index:** <a href='https://scholar.google.com/citations?user=D2n8tswAAAAAJ'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fjiaye-wu%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_i10.json&labelColor=f6f6f6&color=9cf&style=flat&label=i10-index"></a>
+**i10-index:** <a href='https://scholar.google.com/citations?user=D2n8tswAAAAAJ'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fjiaye-wu%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_i10_index.json&labelColor=f6f6f6&color=9cf&style=flat&label=i10-index"></a>
 
 
 ## Auto-fetch
