@@ -14,6 +14,8 @@ The benefits of this cawler version include:
 2. **optimized access**: use CDN (in `_config.yml` set `google_scholar_stats_use_cdn` to `true`) to have better GS data access to in special Internet enviroments with censorship and delay. CDN also avoids `domain blocked` error from GitHub.com when there are too many refreshes. 
 3. **easy deployment**: fork, fill in your info, and play.
 
+**Note:** It is pretty normal to be blocked by Google several times a week resulting in a build action failure, even if random proxies are used. A success once a week should be sufficient for personal use. To change the frequency of the scheduled action, please refer to [google_scholar_crawler.yaml](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler.yaml).
+
 ## Appearance preview
 
 **Total citation:** <a href='https://scholar.google.com/citations?user=D2n8tswAAAAAJ'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fjiaye-wu%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_total_citation.json&labelColor=f6f6f6&color=9cf&style=flat&label=citations"></a>
