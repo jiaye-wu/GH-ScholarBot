@@ -14,7 +14,7 @@ The benefits of this cawler version include:
 2. **optimized access**: use CDN (in `_config.yml` set `google_scholar_stats_use_cdn` to `true`) to have better GS data access to in special Internet enviroments with censorship and delay. CDN also avoids `domain blocked` error from GitHub.com when there are too many refreshes. 
 3. **easy deployment**: fork, fill in your info, and play.
 
-**Note:** It is pretty normal to be blocked by Google several times a week resulting in a build action failure, even if random proxies are used. A success once a week should be sufficient for personal use. To change the frequency of the scheduled action, please refer to [google_scholar_crawler.yaml](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler.yaml). This scheduled task can also be run **on demand** manually, by visiting the Actions page.
+**Note:** It is pretty normal to be blocked by Google several times a week resulting in a build action failure, even if random proxies are used. A success once a week should be sufficient for personal use. To change the frequency of the scheduled action, please refer to [google_scholar_crawler.yaml](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler.yaml). This scheduled task can also be run **on demand** manually, by visiting the Actions page > Get Citation Data > (Re)Run workflow.
 
 ## Appearance preview
 
