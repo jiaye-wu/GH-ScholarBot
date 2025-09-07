@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 import os
 from collections import defaultdict
+import time, random
 
 # ---------- 代理设置 ----------
 pg = ProxyGenerator()
@@ -28,13 +29,21 @@ if not use_proxy:
 # ---------- 抓取 author ----------
 author_id = os.environ['GOOGLE_SCHOLAR_ID']
 
-try:
-    print(f"Start fetching author: {datetime.now()}")
-    author = scholarly.search_author_id(author_id)
-    scholarly.fill(author, sections=['basics', 'indices', 'counts', 'publications'])
-    print(f"Finished fetching author: {datetime.now()}")
-except Exception as e:
-    raise RuntimeError(f"Failed to fetch author data: {e}")
+for attempt in range(3):
+    try:
+        print(f"Start fetching author: {datetime.now()}")
+        author = scholarly.search_author_id(author_id)
+        scholarly.fill(author, sections=['basics', 'indices', 'counts', 'publications'])
+        print(f"Finished fetching author: {datetime.now()}")
+        break
+    except Exception as e:
+        print(f"Attempt {attempt+1} failed: {e}")
+        if attempt < 2:  # 最后一次不延迟
+            delay = random.uniform(2, 10)  # 随机 2–10 秒
+            print(f"Waiting {delay:.1f} seconds before retrying...")
+            time.sleep(delay)
+        else:
+            raise RuntimeError(f"Failed after 3 attempts: {e}")
 
 # ---------- 处理 author 数据 ----------
 author['updated'] = str(datetime.now())
