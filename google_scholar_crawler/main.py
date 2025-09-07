@@ -10,13 +10,17 @@ pg = ProxyGenerator()
 try:
     if pg.FreeProxies():  # Free proxy successful.
         scholarly.use_proxy(pg)
-        use_proxy = True
-        print("Using free proxy.")
+        try:
+            scholarly.search_author_id(os.environ['GOOGLE_SCHOLAR_ID'])
+            use_proxy = True
+            print("Free proxy works, using it.")
+        except Exception as e:
+            print(f"Free proxy failed on request: {e}")
 except Exception as e:
-    print(f"Free proxy failed: {e}, will use runner IP instead.")
+    print(f"Free proxy setup failed: {e}")
 
 if not use_proxy:
-    print("Using runner IP (no proxy).")
+    print("Falling back to runner IP (no proxy).")
 
 author: dict = scholarly.search_author_id(os.environ['GOOGLE_SCHOLAR_ID'])
 scholarly.fill(author, sections=['basics', 'indices', 'counts', 'publications'])
