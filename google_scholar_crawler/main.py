@@ -4,10 +4,19 @@ import json
 from datetime import datetime
 import os
 
+# Try to use free proxy
+use_proxy = False
 pg = ProxyGenerator()
-success = pg.FreeProxies()  # 使用免费代理池（成功率较低）
-# success = pg.ScraperAPI('YOUR_API_KEY')  # 或用付费API（如 scraperapi.com）
-scholarly.use_proxy(pg)
+try:
+    if pg.FreeProxies():  # Free proxy successful.
+        scholarly.use_proxy(pg)
+        use_proxy = True
+        print("Using free proxy.")
+except Exception as e:
+    print(f"Free proxy failed: {e}, will use runner IP instead.")
+
+if not use_proxy:
+    print("Using runner IP (no proxy).")
 
 author: dict = scholarly.search_author_id(os.environ['GOOGLE_SCHOLAR_ID'])
 scholarly.fill(author, sections=['basics', 'indices', 'counts', 'publications'])
@@ -42,3 +51,13 @@ i10_data = {
 }
 with open(f'results/gs_data_i10_index.json', 'w') as outfile:
     json.dump(i10_data, outfile, ensure_ascii=False)
+
+total_pubs = len(author['publications'])
+print(f"Total publications: {total_pubs}")
+pub_count_data = {
+    "schemaVersion": 1,
+    "label": "total-publications",
+    "message": f"{total_pubs}",
+}
+with open(f'results/gs_data_total_publications.json', 'w', encoding='utf-8') as outfile:
+    json.dump(pub_count_data, outfile, ensure_ascii=False)
