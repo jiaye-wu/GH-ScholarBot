@@ -42,7 +42,7 @@ You can **merge** this repo with (inside) your GitHub Pages website:
 2. setup `_config.yml`: copy the lines in this project and change the contents to be yours;
 3. in **project settings** > **Actions** > **General** > **Workflow permissions**, grant **Read and write permissions**;
 4. in **project settings** > **Secret and variables** > **Actions** > **Repository Secrets** > creat a key name `GOOGLE_SCHOLAR_ID` with value being *the string after your Google Scholar profile url* `user=`;
-5. the crawler will create a **branch** in the **website** project named `google-scholar-stats` with 4 json files: `gs_data.json` (full data for all your papers), `gs_data_h_index.json`, `gs_data_i10_index.json`, and `gs_data_total_citation.json`. 
+5. the crawler will create a **branch** in the **website** project named `google-scholar-stats` with 5 json files: `gs_data.json` (full data for all your papers), `gs_data_h_index.json`, `gs_data_i10_index.json`, `gs_data_total_citation.json`, and `gs_data_total_publications.json`. 
 6. If the crawler fails to do so, you can manually create a **branch** name `google-scholar-stats` from `main`. The content in this `google-scholar-stats` branch will be permanantly cleared and replaced by the `json` files when the crawler is working.
 
 ### Option 1: Display your Google Scholar Badge
