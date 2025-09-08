@@ -5,7 +5,7 @@ import os
 from collections import defaultdict
 import time, random
 
-# ---------- 代理设置 ----------
+# ---------- Proxy setting ----------
 pg = ProxyGenerator()
 use_proxy = False
 
@@ -13,7 +13,7 @@ try:
     if pg.FreeProxies():
         scholarly.use_proxy(pg)
         print("Trying free proxy...")
-        # 测试代理是否可用
+        # Test the availability of proxy
         try:
             _ = scholarly.search_author_id(os.environ['GOOGLE_SCHOLAR_ID'])
             use_proxy = True
@@ -26,7 +26,7 @@ except Exception as e:
 if not use_proxy:
     print("Using runner IP (no proxy).")
 
-# ---------- 抓取 author ----------
+# ---------- Fetch author ----------
 author_id = os.environ['GOOGLE_SCHOLAR_ID']
 
 for attempt in range(3):
@@ -38,23 +38,23 @@ for attempt in range(3):
         break
     except Exception as e:
         print(f"Attempt {attempt+1} failed: {e}")
-        if attempt < 2:  # 最后一次不延迟
-            delay = random.uniform(2, 10)  # 随机 2–10 秒
+        if attempt < 2:  # Do not delay after the final attempt
+            delay = random.uniform(2, 10)  # Random 2-10 sec
             print(f"Waiting {delay:.1f} seconds before retrying...")
             time.sleep(delay)
         else:
             raise RuntimeError(f"Failed after 3 attempts: {e}")
 
-# ---------- 处理 author 数据 ----------
+# ---------- Processing author data ----------
 author['updated'] = str(datetime.now())
 author['publications'] = {v['author_pub_id']: v for v in author['publications']}
 os.makedirs('results', exist_ok=True)
 
-# 保存完整 author 信息
+# Save author info
 with open('results/gs_data.json', 'w', encoding='utf-8') as f:
     json.dump(author, f, ensure_ascii=False, indent=2)
 
-# 总引用 / h-index / i10-index
+# total_citation / h-index / i10-index / total_publication
 with open('results/gs_data_total_citation.json', 'w', encoding='utf-8') as f:
     json.dump({
         "schemaVersion": 1,
@@ -81,31 +81,6 @@ with open('results/gs_data_total_publications.json', 'w', encoding='utf-8') as f
         "schemaVersion": 1,
         "label": "total-publications",
         "message": str(len(author['publications']))
-    }, f, ensure_ascii=False, indent=2)
-
-# ---------- 按年份统计文章数和引用数 ----------
-pubs_per_year = defaultdict(int)
-citations_per_year = defaultdict(int)
-
-for pub in author['publications'].values():
-    year = pub.get('pub_year') or pub['bib'].get('year')
-    if year is None:
-        continue
-    try:
-        year = int(year)
-    except ValueError:
-        continue
-    pubs_per_year[year] += 1
-    citations = pub.get('num_citations', 0)
-    citations_per_year[year] += citations
-
-pubs_per_year = dict(sorted(pubs_per_year.items()))
-citations_per_year = dict(sorted(citations_per_year.items()))
-
-with open('results/gs_data_per_year.json', 'w', encoding='utf-8') as f:
-    json.dump({
-        "publications_per_year": pubs_per_year,
-        "citations_per_year": citations_per_year
     }, f, ensure_ascii=False, indent=2)
 
 print("Data fetching and processing complete.")
