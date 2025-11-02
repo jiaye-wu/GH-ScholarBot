@@ -1,4 +1,4 @@
-name: Get Citation Data
+name: Get Citation Data (without free proxy)
 
 on: 
  page_build: 
