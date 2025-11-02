@@ -40,8 +40,6 @@ Your Google Scholar data is automatically fetched at UTC 2:42 every Sunday.
 
 - `google_scholar_stats_use_cdn: true` : true: use CDN, delay might occur. false: use GitHub.com.
 
-- `crawler_use_proxy: false` : true: use scholarly free proxies.
-
 ### Option 1: installation inside website repo (integration)
 
 You can **merge** this repo with (inside) your GitHub Pages website:
@@ -52,8 +50,8 @@ You can **merge** this repo with (inside) your GitHub Pages website:
 4. in **project settings** > **Secret and variables** > **Actions** > **Repository Secrets** > creat a key name `GOOGLE_SCHOLAR_ID` with value being *the string after your Google Scholar profile url* `user=`;
 5. the crawler will create a **branch** in the **website** project named `google-scholar-stats` with 5 json files: `gs_data.json` (full data for all your papers), `gs_data_h_index.json`, `gs_data_i10_index.json`, `gs_data_total_citation.json`, and `gs_data_total_publications.json`. 
 6. If the crawler fails to do so, you can manually create a **branch** name `google-scholar-stats` from `main`. The content in this `google-scholar-stats` branch will be permanantly cleared and replaced by the `json` files when the crawler is working.
-
-
+   
+   
 
 To use it **in your `.md` file** for your website pages:
 
@@ -124,8 +122,8 @@ You can **fork** this repo into your own GitHub account, for example `github.com
 3. in **project settings** > **Secret and variables** > **Actions** > **Repository Secrets** > creat a key name `GOOGLE_SCHOLAR_ID` with value being *the string after your Google Scholar profile url* `user=`;
 4. the crawler will create a **branch** in the **crawler** project named `google-scholar-stats` with 4 json files: `gs_data.json` (full data for all your papers), `gs_data_h_index.json`, `gs_data_i10_index.json`, and `gs_data_total_citation.json`. 
 5. If the crawler fails to do so, you can manually create a **branch** name `google-scholar-stats` from `main`. The content in this `google-scholar-stats` branch will be permanantly cleared and replaced by the `json` files when the crawler is working.
-
-
+   
+   
 
 To use it **in your `.md` file** for your website pages:
 
@@ -178,3 +176,19 @@ Use GitHub.com:
 ## All your other citation data for each paper
 
 Available in `gs_data.json`. You can be creative and do whatever you want with it!
+
+## Google blocking the autofetch?
+
+The current [script](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/google_scholar_crawler/main_proxy.py) will skip the free proxies and use direct access when it encounters a connection issue. Therefore, if the run is stuck, it is more likely that the current GitHub runner is temporarily blocked by Google. Here are some solutions for you to try:
+
+1. A direct but non-free solution is to subscribe to a paid proxy. Please refer to [scholarly-python-package](https://github.com/scholarly-python-package/scholarly?tab=readme-ov-file#examples).
+2. It looks like the scheduled workflow runner of GitHub is more prone to being detected and blocked by Google, and manually rerunning a failed job (several times until it succeeds) has a greater success rate (it seems that the manual jobs are on a different runner; I might be wrong, but it does work). Usually, you don't need to run this repo so frequently. For me, once a week should be sufficient.
+3. I prepared two automatic workflow, one [with proxy by default](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_with_proxy.yaml) and one [without](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_no_proxy.yaml). These two can be manually triggered in GitHub Actions.
+4. For automatic update (workflow), please take a look at [workflow file](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/) and play with 
+   
+   ```yaml
+   schedule:
+   - cron:  '42 2 * * 0'
+   ```
+   
+   with a different frequency and time. I don't know the optimal combination yet.

@@ -5,7 +5,7 @@ import os
 from collections import defaultdict
 import time, random
 
-crawler_use_proxy = False
+crawler_use_proxy = True
 
 # ---------- Proxy setting ----------
 pg = ProxyGenerator()
