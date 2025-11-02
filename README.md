@@ -30,7 +30,9 @@ Your Google Scholar data is automatically fetched at UTC 2:42 every Sunday.
 
 **Note:** It is pretty normal to be blocked by Google several times a week resulting in a build action failure, even if random proxies are used. A success once a week should be sufficient for personal use. To change the frequency of the scheduled action, please refer to [google_scholar_crawler.yaml](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler.yaml). This scheduled task can also be run **on demand** manually, by visiting the Actions page > Get Citation Data > (Re)Run workflow.
 
-**The most recent fetch:** [![Get Citation Data](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler.yaml/badge.svg?branch=main)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler.yaml)
+**The most recent fetch with free proxy:** [![Get Citation Data (with free proxy)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_with_proxy.yaml/badge.svg)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_with_proxy.yaml)
+
+**The most recent fetch without proxy:** [![Get Citation Data (without free proxy)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_no_proxy.yaml/badge.svg)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_no_proxy.yaml)
 
 ## Implementation
 
@@ -182,8 +184,11 @@ Available in `gs_data.json`. You can be creative and do whatever you want with i
 The current [script](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/google_scholar_crawler/main_proxy.py) will skip the free proxies and use direct access when it encounters a connection issue. Therefore, if the run is stuck, it is more likely that the current GitHub runner is temporarily blocked by Google. Here are some solutions for you to try:
 
 1. A direct but non-free solution is to subscribe to a paid proxy. Please refer to [scholarly-python-package](https://github.com/scholarly-python-package/scholarly?tab=readme-ov-file#examples).
+
 2. It looks like the scheduled workflow runner of GitHub is more prone to being detected and blocked by Google, and manually rerunning a failed job (several times until it succeeds) has a greater success rate (it seems that the manual jobs are on a different runner; I might be wrong, but it does work). Usually, you don't need to run this repo so frequently. For me, once a week should be sufficient.
+
 3. I prepared two automatic workflow, one [with proxy by default](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_with_proxy.yaml) and one [without](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_no_proxy.yaml). These two can be manually triggered in GitHub Actions.
+
 4. For automatic update (workflow), please take a look at [workflow file](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/) and play with 
    
    ```yaml
