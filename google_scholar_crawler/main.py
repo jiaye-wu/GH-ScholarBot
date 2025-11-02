@@ -4,26 +4,49 @@ from datetime import datetime
 import os
 from collections import defaultdict
 import time, random
+import yaml
+
+# ---------- Load config from _config.yml ----------
+script_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.abspath(os.path.join(script_dir, '..'))
+config_path = os.path.join(root_dir, '_config.yml')
+
+crawler_use_proxy = True
+if os.path.exists(config_path):
+    with open(config_path, 'r', encoding='utf-8') as f:
+        try:
+            config = yaml.safe_load(f)
+            crawler_use_proxy = bool(config.get('crawler_use_proxy', True))
+        except Exception as e:
+            print(f"Warning: Failed to parse _config.yml, using default crawler_use_proxy=True. Error: {e}")
+else:
+    print(f"Warning: _config.yml not found at {config_path}, using default crawler_use_proxy=True.")
+
+print(f"crawler_use_proxy = {crawler_use_proxy}")
 
 # ---------- Proxy setting ----------
 pg = ProxyGenerator()
 use_proxy = False
 
-try:
-    if pg.FreeProxies():
-        scholarly.use_proxy(pg)
-        print("Trying free proxy...")
-        # Test the availability of proxy
-        try:
-            _ = scholarly.search_author_id(os.environ['GOOGLE_SCHOLAR_ID'])
-            use_proxy = True
-            print("Free proxy works, using it.")
-        except Exception as e:
-            print(f"Free proxy test failed: {e}")
-except Exception as e:
-    print(f"Setting up free proxy failed: {e}")
+if crawler_use_proxy:
+    try:
+        if pg.FreeProxies():
+            scholarly.use_proxy(pg)
+            print("Trying free proxy...")
+            # Test the availability of proxy
+            try:
+                _ = scholarly.search_author_id(os.environ['GOOGLE_SCHOLAR_ID'])
+                use_proxy = True
+                print("Free proxy works, using it.")
+            except Exception as e:
+                print(f"Free proxy test failed: {e}")
+    except Exception as e:
+        print(f"Setting up free proxy failed: {e}")
+else:
+    print("Skipping proxy setup (crawler_use_proxy = false).")
 
 if not use_proxy:
+    scholarly.use_proxy(None)
     print("Using runner IP (no proxy).")
 
 # ---------- Fetch author ----------

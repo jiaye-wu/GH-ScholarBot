@@ -34,7 +34,15 @@ Your Google Scholar data is automatically fetched at UTC 2:42 every Sunday.
 
 ## Implementation
 
-### Option 1: installation inside website
+### Configuration in `config.yml`
+
+- `repository: "<your-github-user-name>/<repo-name>"`: change `<your-github-user-name>` to your GitHub user name. `<repo-name>` is your GitHub Pages website repo if you choose **Option 1** below; `GH-ScholarBot` if you choose **Option 2**.
+
+- `google_scholar_stats_use_cdn: true` : true: use CDN, delay might occur. false: use GitHub.com.
+
+- `crawler_use_proxy: false` : true: use scholarly free proxies.
+
+### Option 1: installation inside website repo (integration)
 
 You can **merge** this repo with (inside) your GitHub Pages website:
 
@@ -45,7 +53,7 @@ You can **merge** this repo with (inside) your GitHub Pages website:
 5. the crawler will create a **branch** in the **website** project named `google-scholar-stats` with 5 json files: `gs_data.json` (full data for all your papers), `gs_data_h_index.json`, `gs_data_i10_index.json`, `gs_data_total_citation.json`, and `gs_data_total_publications.json`. 
 6. If the crawler fails to do so, you can manually create a **branch** name `google-scholar-stats` from `main`. The content in this `google-scholar-stats` branch will be permanantly cleared and replaced by the `json` files when the crawler is working.
 
-### Option 1: Display your Google Scholar Badge
+
 
 To use it **in your `.md` file** for your website pages:
 
@@ -79,7 +87,7 @@ Use GitHub.com:
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2F<your-github-user-name>.github.io@google-scholar-stats%2Fgs_data_total_publications.json&labelColor=f6f6f6&color=9cf&style=flat&label=publications"></a>
 ```
 
-#### For **Google Scholar h-index badge** 
+#### For **Google Scholar h-index badge**
 
 Use CDN for GitHub (delays in data-refresh might exist):
 
@@ -93,7 +101,7 @@ Use GitHub.com:
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2F<your-github-user-name>.github.io@google-scholar-stats%2Fgs_data_h_index.json&labelColor=f6f6f6&color=9cf&style=flat&label=h-index"></a>
 ```
 
-#### For **Google Scholar i10-index badge** 
+#### For **Google Scholar i10-index badge**
 
 Use CDN for GitHub (delays in data-refresh might exist):
 
@@ -117,7 +125,7 @@ You can **fork** this repo into your own GitHub account, for example `github.com
 4. the crawler will create a **branch** in the **crawler** project named `google-scholar-stats` with 4 json files: `gs_data.json` (full data for all your papers), `gs_data_h_index.json`, `gs_data_i10_index.json`, and `gs_data_total_citation.json`. 
 5. If the crawler fails to do so, you can manually create a **branch** name `google-scholar-stats` from `main`. The content in this `google-scholar-stats` branch will be permanantly cleared and replaced by the `json` files when the crawler is working.
 
-### Option 2: Display your Google Scholar Citation Badge
+
 
 To use it **in your `.md` file** for your website pages:
 
@@ -125,7 +133,7 @@ To use it **in your `.md` file** for your website pages:
 
 **Note:** the codes below is different from **Option 1**. It uses data under `github.com/<your-github-user-name>/GH-ScholarBot/` other than `github.com/<your-github-user-name>/<your-github-user-name>.github.io/`.
 
-#### For **Google Scholar citation badge** 
+#### For **Google Scholar citation badge**
 
 Use CDN for GitHub (delays in data-refresh might exist):
 
@@ -139,7 +147,7 @@ Use GitHub.com:
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_total_citation.json&labelColor=f6f6f6&color=9cf&style=flat&label=citations"></a>
 ```
 
-#### For **Google Scholar h-index badge** 
+#### For **Google Scholar h-index badge**
 
 Use CDN for GitHub (delays in data-refresh might exist):
 
@@ -153,7 +161,7 @@ Use GitHub.com:
 <a href='https://scholar.google.com/citations?user=GOOGLE_SCHOLAR_ID'><img src="https://img.shields.io/endpoint?logo=Google%20Scholar&url=https%3A%2F%2Fgithub.com%2F<your-github-user-name>%2FGH-ScholarBot@google-scholar-stats%2Fgs_data_h_index.json&labelColor=f6f6f6&color=9cf&style=flat&label=h-index"></a>
 ```
 
-#### For **Google Scholar i10-index badge** 
+#### For **Google Scholar i10-index badge**
 
 Use CDN for GitHub (delays in data-refresh might exist):
 
