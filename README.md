@@ -30,6 +30,10 @@ Your Google Scholar data is automatically fetched at UTC 2:42 every Sunday.
 
 **Note:** It is pretty normal to be blocked by Google several times a week resulting in a build action failure, even if random proxies are used. A success once a week should be sufficient for personal use. To change the frequency of the scheduled action, please refer to [google_scholar_crawler.yaml](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler.yaml). This scheduled task can also be run **on demand** manually, by visiting the Actions page > Get Citation Data > (Re)Run workflow.
 
+### Redundant fetch [workflow](https://github.com/jiaye-wu/GH-ScholarBot/tree/main/.github/workflows): 
+
+Either one that succeeds will do.
+
 **The most recent fetch with free proxy:** [![Get Citation Data (with free proxy)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_with_proxy.yaml/badge.svg)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_with_proxy.yaml)
 
 **The most recent fetch without proxy:** [![Get Citation Data (without free proxy)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_no_proxy.yaml/badge.svg)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_no_proxy.yaml)
