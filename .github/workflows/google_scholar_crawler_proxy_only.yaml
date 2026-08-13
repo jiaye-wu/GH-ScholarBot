@@ -1,0 +1,29 @@
+name: Test Free Proxy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: google-scholar-proxy-test
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: pip
+        cache-dependency-path: google_scholar_crawler/requirements.txt
+    - name: Test free proxy
+      run: |
+        cd ./google_scholar_crawler
+        python3 -m pip install -r requirements.txt
+        python3 main.py --use-free-proxy --test-free-proxy
+      env:
+        GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}

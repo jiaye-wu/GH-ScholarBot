@@ -28,15 +28,17 @@ The benefits of this cawler version include:
 
 Your Google Scholar data is automatically fetched at UTC 2:42 every Sunday.
 
-**Note:** Google may block crawler requests, even when free proxies are used. A successful update once a week is generally sufficient for personal use. The scheduled [free-proxy workflow](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_with_proxy.yaml) runs at UTC 02:42 every Sunday; its direct-access fallback runs only if that scheduled attempt fails. Either workflow can also be run manually from the Actions page.
+**Note:** Google may block crawler requests, even when free proxies are used. A successful update once a week is generally sufficient for personal use. The scheduled [free-proxy workflow](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_with_proxy.yaml) runs at UTC 02:42 every Sunday; its direct-access fallback runs whenever the proxy attempt fails, including manually triggered runs. Either workflow can also be run manually from the Actions page.
 
 ### Fetch workflows
 
-The free-proxy workflow is the scheduled primary path. The direct-access workflow is its automatic fallback and can also be run manually.
+The free-proxy workflow is the scheduled primary path. The direct-access workflow is its automatic fallback and can also be run manually. The proxy-test workflow is manual-only and checks proxy availability without changing published data.
 
 **The most recent fetch with free proxy:** [![Get Citation Data (with free proxy)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_with_proxy.yaml/badge.svg)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_with_proxy.yaml)
 
 **The most recent fetch without proxy:** [![Get Citation Data (without free proxy)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_no_proxy.yaml/badge.svg)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_no_proxy.yaml)
+
+**Test free proxy only:** [![Test Free Proxy](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_proxy_only.yaml/badge.svg)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_proxy_only.yaml)
 
 ## Implementation
 
@@ -191,7 +193,7 @@ The crawler first tries a free proxy. If no working free proxy is available, the
 
 2. It looks like the scheduled workflow runner of GitHub is more prone to being detected and blocked by Google, and manually rerunning a failed job (several times until it succeeds) has a greater success rate (it seems that the manual jobs are on a different runner; I might be wrong, but it does work). Usually, you don't need to run this repo so frequently. For me, once a week should be sufficient.
 
-3. The scheduled [free-proxy workflow](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_with_proxy.yaml) uses the direct-access [fallback workflow](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_no_proxy.yaml) only after a scheduled proxy failure. Either workflow can also be manually triggered in GitHub Actions.
+3. To update data or manually rerun a failed update, run the [free-proxy workflow](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_with_proxy.yaml). It automatically uses the direct-access [fallback workflow](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_no_proxy.yaml) after any proxy failure. To test only whether a free proxy is available, run [Test Free Proxy](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/google_scholar_crawler_proxy_only.yaml); it does not write data or trigger the fallback workflow.
 
 4. For automatic update (workflow), please take a look at [workflow file](https://github.com/jiaye-wu/GH-ScholarBot/blob/main/.github/workflows/) and play with 
    

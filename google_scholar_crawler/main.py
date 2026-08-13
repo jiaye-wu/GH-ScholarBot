@@ -111,12 +111,22 @@ def main() -> None:
         action="store_true",
         help="Require a tested free proxy; exit non-zero when none is available.",
     )
+    parser.add_argument(
+        "--test-free-proxy",
+        action="store_true",
+        help="Test a free proxy without writing result files.",
+    )
     args = parser.parse_args()
+    if args.test_free_proxy and not args.use_free_proxy:
+        parser.error("--test-free-proxy requires --use-free-proxy.")
     author_id = get_author_id()
 
     initial_author = None
     if args.use_free_proxy:
         initial_author = configure_free_proxy(author_id)
+        if args.test_free_proxy:
+            print("Free proxy test completed successfully; no files were written.")
+            return
     else:
         print("Using runner IP (no proxy).")
 

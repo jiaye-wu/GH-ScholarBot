@@ -17,8 +17,7 @@ jobs:
   build:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'failure' &&
-       github.event.workflow_run.event != 'workflow_dispatch')
+      github.event.workflow_run.conclusion == 'failure'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
