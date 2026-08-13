@@ -29,7 +29,8 @@ else:
     print("Skipping proxy setup (crawler_use_proxy = false).")
 
 if not use_proxy:
-    scholarly.use_proxy(None)
+    # Do not call scholarly.use_proxy(None): in scholarly 1.4.4 that requests
+    # its built-in free-proxy provider instead of disabling proxies.
     print("Using runner IP (no proxy).")
 
 # ---------- Fetch author ----------
