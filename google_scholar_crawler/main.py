@@ -1,93 +1,128 @@
-from scholarly import scholarly, ProxyGenerator
+import argparse
 import json
-from datetime import datetime
 import os
-from collections import defaultdict
-import time, random
+import random
+import tempfile
+import time
+from datetime import datetime, timezone
+from pathlib import Path
 
-crawler_use_proxy = False
+from scholarly import ProxyGenerator, scholarly
 
-# ---------- Proxy setting ----------
-pg = ProxyGenerator()
-use_proxy = False
 
-if crawler_use_proxy:
+MAX_ATTEMPTS = 3
+RETRY_DELAYS_SECONDS = (15, 45)
+RESULTS_DIR = Path("results")
+
+
+def now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def get_author_id() -> str:
+    author_id = os.environ.get("GOOGLE_SCHOLAR_ID")
+    if not author_id:
+        raise RuntimeError("GOOGLE_SCHOLAR_ID is not configured.")
+    return author_id
+
+
+def configure_free_proxy(author_id: str):
+    """Configure and test a free proxy, or fail so the fallback workflow runs."""
+    proxy_generator = ProxyGenerator()
     try:
-        if pg.FreeProxies():
-            scholarly.use_proxy(pg)
-            print("Trying free proxy...")
-            # Test the availability of proxy
-            try:
-                _ = scholarly.search_author_id(os.environ['GOOGLE_SCHOLAR_ID'])
-                use_proxy = True
-                print("Free proxy works, using it.")
-            except Exception as e:
-                print(f"Free proxy test failed: {e}")
-    except Exception as e:
-        print(f"Setting up free proxy failed: {e}")
-else:
-    print("Skipping proxy setup (crawler_use_proxy = false).")
-
-if not use_proxy:
-    # Do not call scholarly.use_proxy(None): in scholarly 1.4.4 that requests
-    # its built-in free-proxy provider instead of disabling proxies.
-    print("Using runner IP (no proxy).")
-
-# ---------- Fetch author ----------
-author_id = os.environ['GOOGLE_SCHOLAR_ID']
-
-for attempt in range(3):
-    try:
-        print(f"Start fetching author: {datetime.now()}")
+        if not proxy_generator.FreeProxies():
+            raise RuntimeError("No working free proxy was found.")
+        scholarly.use_proxy(proxy_generator)
+        print("Testing free proxy...")
         author = scholarly.search_author_id(author_id)
-        scholarly.fill(author, sections=['basics', 'indices', 'counts', 'publications'])
-        print(f"Finished fetching author: {datetime.now()}")
-        break
-    except Exception as e:
-        print(f"Attempt {attempt+1} failed: {e}")
-        if attempt < 2:  # Do not delay after the final attempt
-            delay = random.uniform(2, 10)  # Random 2-10 sec
+        print("Free proxy works, using it.")
+        return author
+    except Exception as exc:
+        raise RuntimeError(f"Free proxy setup or test failed: {exc}") from exc
+
+
+def fetch_author(author_id: str, initial_author=None):
+    author = initial_author
+    for attempt in range(MAX_ATTEMPTS):
+        try:
+            print(f"Fetching author (attempt {attempt + 1}/{MAX_ATTEMPTS}): {now()}")
+            if author is None:
+                author = scholarly.search_author_id(author_id)
+            scholarly.fill(author, sections=["basics", "indices", "counts", "publications"])
+            print(f"Finished fetching author: {now()}")
+            return author
+        except Exception as exc:
+            author = None
+            print(f"Attempt {attempt + 1} failed ({type(exc).__name__}): {exc}")
+            if attempt == MAX_ATTEMPTS - 1:
+                raise RuntimeError(f"Failed after {MAX_ATTEMPTS} attempts.") from exc
+            delay = RETRY_DELAYS_SECONDS[attempt] + random.uniform(0, 10)
             print(f"Waiting {delay:.1f} seconds before retrying...")
             time.sleep(delay)
+
+
+def write_json_atomically(path: Path, value) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(
+        "w", encoding="utf-8", dir=path.parent, delete=False
+    ) as temporary_file:
+        json.dump(value, temporary_file, ensure_ascii=False, indent=2)
+        temporary_name = temporary_file.name
+    os.replace(temporary_name, path)
+
+
+def save_results(author: dict) -> None:
+    publications = author.get("publications", [])
+    publication_map = {}
+    missing_ids = 0
+    duplicate_ids = 0
+    for publication in publications:
+        publication_id = publication.get("author_pub_id")
+        if not publication_id:
+            missing_ids += 1
+        elif publication_id in publication_map:
+            duplicate_ids += 1
         else:
-            raise RuntimeError(f"Failed after 3 attempts: {e}")
+            publication_map[publication_id] = publication
+    if missing_ids or duplicate_ids:
+        print(f"Publication IDs skipped: missing={missing_ids}, duplicate={duplicate_ids}.")
 
-# ---------- Processing author data ----------
-author['updated'] = str(datetime.now())
-author['publications'] = {v['author_pub_id']: v for v in author['publications']}
-os.makedirs('results', exist_ok=True)
+    author["updated"] = now()
+    author["publications"] = publication_map
+    write_json_atomically(RESULTS_DIR / "gs_data.json", author)
 
-# Save author info
-with open('results/gs_data.json', 'w', encoding='utf-8') as f:
-    json.dump(author, f, ensure_ascii=False, indent=2)
+    badges = {
+        "gs_data_total_citation.json": ("citations", author.get("citedby", 0)),
+        "gs_data_h_index.json": ("h-index", author.get("hindex", 0)),
+        "gs_data_i10_index.json": ("i10-index", author.get("i10index", 0)),
+        "gs_data_total_publications.json": ("total-publications", len(publication_map)),
+    }
+    for filename, (label, value) in badges.items():
+        write_json_atomically(
+            RESULTS_DIR / filename,
+            {"schemaVersion": 1, "label": label, "message": str(value)},
+        )
 
-# total_citation / h-index / i10-index / total_publication
-with open('results/gs_data_total_citation.json', 'w', encoding='utf-8') as f:
-    json.dump({
-        "schemaVersion": 1,
-        "label": "citations",
-        "message": str(author.get('citedby', 0))
-    }, f, ensure_ascii=False, indent=2)
 
-with open('results/gs_data_h_index.json', 'w', encoding='utf-8') as f:
-    json.dump({
-        "schemaVersion": 1,
-        "label": "h-index",
-        "message": str(author.get('hindex', 0))
-    }, f, ensure_ascii=False, indent=2)
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Fetch Google Scholar author data.")
+    parser.add_argument(
+        "--use-free-proxy",
+        action="store_true",
+        help="Require a tested free proxy; exit non-zero when none is available.",
+    )
+    args = parser.parse_args()
+    author_id = get_author_id()
 
-with open('results/gs_data_i10_index.json', 'w', encoding='utf-8') as f:
-    json.dump({
-        "schemaVersion": 1,
-        "label": "i10-index",
-        "message": str(author.get('i10index', 0))
-    }, f, ensure_ascii=False, indent=2)
+    initial_author = None
+    if args.use_free_proxy:
+        initial_author = configure_free_proxy(author_id)
+    else:
+        print("Using runner IP (no proxy).")
 
-with open('results/gs_data_total_publications.json', 'w', encoding='utf-8') as f:
-    json.dump({
-        "schemaVersion": 1,
-        "label": "total-publications",
-        "message": str(len(author['publications']))
-    }, f, ensure_ascii=False, indent=2)
+    save_results(fetch_author(author_id, initial_author))
+    print("Data fetching and processing complete.")
 
-print("Data fetching and processing complete.")
+
+if __name__ == "__main__":
+    main()

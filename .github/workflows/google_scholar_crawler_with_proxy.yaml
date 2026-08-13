@@ -1,24 +1,32 @@
 name: Get Citation Data (with free proxy)
 
-on: 
- page_build: 
- workflow_dispatch:
- schedule:
-  - cron:  '42 2 * * 0'
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '42 2 * * 0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: google-scholar-crawler
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Install Reqs
-      run: |
-        sudo apt-get install python3-setuptools
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: pip
+        cache-dependency-path: google_scholar_crawler/requirements.txt
     - name: Run
       run: |
         cd ./google_scholar_crawler
-        pip3 install -r requirements.txt
-        python3 main_proxy.py
+        python3 -m pip install -r requirements.txt
+        python3 main.py --use-free-proxy
         cd ./results
         git init
         git config --local user.name "${GITHUB_ACTOR}"

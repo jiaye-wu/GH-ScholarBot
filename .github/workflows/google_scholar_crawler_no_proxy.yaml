@@ -1,23 +1,36 @@
-name: Get Citation Data (without free proxy)
+name: Get Citation Data (without free proxy fallback)
 
-on: 
- page_build: 
- workflow_dispatch:
- schedule:
-  - cron:  '45 3 * * 0'
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Get Citation Data (with free proxy)"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: google-scholar-crawler
+  cancel-in-progress: false
 
 jobs:
   build:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'failure' &&
+       github.event.workflow_run.event != 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Install Reqs
-      run: |
-        sudo apt-get install python3-setuptools
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: pip
+        cache-dependency-path: google_scholar_crawler/requirements.txt
     - name: Run
       run: |
         cd ./google_scholar_crawler
-        pip3 install -r requirements.txt
+        python3 -m pip install -r requirements.txt
         python3 main.py
         cd ./results
         git init
