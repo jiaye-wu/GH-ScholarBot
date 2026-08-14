@@ -2,8 +2,10 @@ import argparse
 import json
 import os
 import random
+import signal
 import tempfile
 import time
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -14,6 +16,7 @@ MAX_ATTEMPTS = 3
 RETRY_DELAYS_SECONDS = (15, 45)
 SCHOLAR_REQUEST_TIMEOUT_SECONDS = 15
 SCHOLAR_REQUEST_RETRIES = 2
+ATTEMPT_TIMEOUT_SECONDS = 8 * 60
 RESULTS_DIR = Path("results")
 
 
@@ -39,15 +42,39 @@ def configure_scholarly() -> None:
     )
 
 
+@contextmanager
+def attempt_timeout(seconds: int):
+    """Interrupt a stuck Scholar operation on Linux runners.
+
+    The external workflow timeout remains the cross-platform safety net. SIGALRM
+    lets GitHub Actions retry a single stuck operation before that final limit.
+    """
+    if not hasattr(signal, "SIGALRM"):
+        yield
+        return
+
+    def raise_timeout(_signum, _frame):
+        raise TimeoutError(f"Scholar attempt exceeded {seconds} seconds.")
+
+    previous_handler = signal.signal(signal.SIGALRM, raise_timeout)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous_handler)
+
+
 def configure_free_proxy(author_id: str):
     """Configure and test a free proxy, or fail so the fallback workflow runs."""
     proxy_generator = ProxyGenerator()
     try:
-        if not proxy_generator.FreeProxies():
-            raise RuntimeError("No working free proxy was found.")
-        scholarly.use_proxy(proxy_generator)
-        print("Testing free proxy...")
-        author = scholarly.search_author_id(author_id)
+        with attempt_timeout(ATTEMPT_TIMEOUT_SECONDS):
+            if not proxy_generator.FreeProxies():
+                raise RuntimeError("No working free proxy was found.")
+            scholarly.use_proxy(proxy_generator)
+            print("Testing free proxy...")
+            author = scholarly.search_author_id(author_id)
         print("Free proxy works, using it.")
         return author
     except Exception as exc:
@@ -59,9 +86,14 @@ def fetch_author(author_id: str, initial_author=None):
     for attempt in range(MAX_ATTEMPTS):
         try:
             print(f"Fetching author (attempt {attempt + 1}/{MAX_ATTEMPTS}): {now()}")
-            if author is None:
-                author = scholarly.search_author_id(author_id)
-            scholarly.fill(author, sections=["basics", "indices", "counts", "publications"])
+            with attempt_timeout(ATTEMPT_TIMEOUT_SECONDS):
+                if author is None:
+                    print("Looking up author profile...")
+                    author = scholarly.search_author_id(author_id)
+                print("Filling author metadata, metrics, and publications...")
+                scholarly.fill(
+                    author, sections=["basics", "indices", "counts", "publications"]
+                )
             print(f"Finished fetching author: {now()}")
             return author
         except Exception as exc:
