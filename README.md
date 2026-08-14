@@ -34,6 +34,8 @@ Your Google Scholar data is automatically fetched at UTC 2:42 every Sunday.
 
 The free-proxy workflow is the scheduled primary path. The direct-access workflow is its automatic fallback and can also be run manually. The proxy-test workflow is manual-only and checks proxy availability without changing published data.
 
+Each data-fetch workflow has a 45-minute crawler limit, so a blocked Google Scholar request fails visibly instead of consuming the full GitHub Actions job limit.
+
 **The most recent fetch with free proxy:** [![Get Citation Data (with free proxy)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_with_proxy.yaml/badge.svg)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_with_proxy.yaml)
 
 **The most recent fetch without proxy:** [![Get Citation Data (without free proxy)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_no_proxy.yaml/badge.svg)](https://github.com/jiaye-wu/GH-ScholarBot/actions/workflows/google_scholar_crawler_no_proxy.yaml)

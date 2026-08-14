@@ -12,6 +12,8 @@ from scholarly import ProxyGenerator, scholarly
 
 MAX_ATTEMPTS = 3
 RETRY_DELAYS_SECONDS = (15, 45)
+SCHOLAR_REQUEST_TIMEOUT_SECONDS = 15
+SCHOLAR_REQUEST_RETRIES = 2
 RESULTS_DIR = Path("results")
 
 
@@ -24,6 +26,17 @@ def get_author_id() -> str:
     if not author_id:
         raise RuntimeError("GOOGLE_SCHOLAR_ID is not configured.")
     return author_id
+
+
+def configure_scholarly() -> None:
+    """Keep individual Scholar requests and library retries bounded."""
+    scholarly.set_timeout(SCHOLAR_REQUEST_TIMEOUT_SECONDS)
+    scholarly.set_retries(SCHOLAR_REQUEST_RETRIES)
+    print(
+        "Configured scholarly: "
+        f"request timeout={SCHOLAR_REQUEST_TIMEOUT_SECONDS}s, "
+        f"retries={SCHOLAR_REQUEST_RETRIES}."
+    )
 
 
 def configure_free_proxy(author_id: str):
@@ -120,6 +133,7 @@ def main() -> None:
     if args.test_free_proxy and not args.use_free_proxy:
         parser.error("--test-free-proxy requires --use-free-proxy.")
     author_id = get_author_id()
+    configure_scholarly()
 
     initial_author = None
     if args.use_free_proxy:

@@ -15,6 +15,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 50
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
@@ -26,7 +27,7 @@ jobs:
       run: |
         cd ./google_scholar_crawler
         python3 -m pip install -r requirements.txt
-        python3 main.py --use-free-proxy
+        timeout --signal=TERM --kill-after=1m 45m python3 -u main.py --use-free-proxy
         cd ./results
         git init
         git config --local user.name "${GITHUB_ACTOR}"

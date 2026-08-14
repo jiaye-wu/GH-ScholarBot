@@ -13,6 +13,7 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
@@ -24,6 +25,6 @@ jobs:
       run: |
         cd ./google_scholar_crawler
         python3 -m pip install -r requirements.txt
-        python3 main.py --use-free-proxy --test-free-proxy
+        timeout --signal=TERM --kill-after=1m 8m python3 -u main.py --use-free-proxy --test-free-proxy
       env:
         GOOGLE_SCHOLAR_ID: ${{ secrets.GOOGLE_SCHOLAR_ID }}
