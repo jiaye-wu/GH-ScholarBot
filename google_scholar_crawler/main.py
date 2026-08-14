@@ -3,6 +3,8 @@ import json
 import os
 import random
 import signal
+import subprocess
+import sys
 import tempfile
 import time
 from contextlib import contextmanager
@@ -81,19 +83,53 @@ def configure_free_proxy(author_id: str):
         raise RuntimeError(f"Free proxy setup or test failed: {exc}") from exc
 
 
+def fetch_author_once(author_id: str, initial_author=None):
+    """Perform one Scholar lookup and fill operation."""
+    author = initial_author
+    if author is None:
+        print("Looking up author profile...")
+        author = scholarly.search_author_id(author_id)
+    print("Filling author metadata, metrics, and publications...")
+    scholarly.fill(author, sections=["basics", "indices", "counts", "publications"])
+    return author
+
+
+def fetch_author_in_subprocess(author_id: str):
+    """Fetch directly in an isolated Linux process with a reliable hard limit."""
+    with tempfile.TemporaryDirectory() as temporary_directory:
+        output_path = Path(temporary_directory) / "author.json"
+        command = [
+            sys.executable,
+            "-u",
+            str(Path(__file__).resolve()),
+            "--fetch-once-output",
+            str(output_path),
+        ]
+        process = subprocess.Popen(command, start_new_session=True)
+        try:
+            return_code = process.wait(timeout=ATTEMPT_TIMEOUT_SECONDS)
+        except subprocess.TimeoutExpired as exc:
+            os.killpg(process.pid, signal.SIGKILL)
+            process.wait()
+            raise TimeoutError(
+                f"Scholar attempt exceeded {ATTEMPT_TIMEOUT_SECONDS} seconds."
+            ) from exc
+        if return_code != 0:
+            raise RuntimeError(f"Isolated Scholar attempt exited with code {return_code}.")
+        with output_path.open(encoding="utf-8") as output_file:
+            return json.load(output_file)
+
+
 def fetch_author(author_id: str, initial_author=None):
     author = initial_author
     for attempt in range(MAX_ATTEMPTS):
         try:
             print(f"Fetching author (attempt {attempt + 1}/{MAX_ATTEMPTS}): {now()}")
-            with attempt_timeout(ATTEMPT_TIMEOUT_SECONDS):
-                if author is None:
-                    print("Looking up author profile...")
-                    author = scholarly.search_author_id(author_id)
-                print("Filling author metadata, metrics, and publications...")
-                scholarly.fill(
-                    author, sections=["basics", "indices", "counts", "publications"]
-                )
+            if author is None and os.name == "posix":
+                author = fetch_author_in_subprocess(author_id)
+            else:
+                with attempt_timeout(ATTEMPT_TIMEOUT_SECONDS):
+                    author = fetch_author_once(author_id, author)
             print(f"Finished fetching author: {now()}")
             return author
         except Exception as exc:
@@ -161,11 +197,22 @@ def main() -> None:
         action="store_true",
         help="Test a free proxy without writing result files.",
     )
+    parser.add_argument(
+        "--fetch-once-output",
+        type=Path,
+        help=argparse.SUPPRESS,
+    )
     args = parser.parse_args()
     if args.test_free_proxy and not args.use_free_proxy:
         parser.error("--test-free-proxy requires --use-free-proxy.")
     author_id = get_author_id()
     configure_scholarly()
+
+    if args.fetch_once_output:
+        author = fetch_author_once(author_id)
+        write_json_atomically(args.fetch_once_output, author)
+        print("Isolated direct fetch completed successfully.")
+        return
 
     initial_author = None
     if args.use_free_proxy:

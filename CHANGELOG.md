@@ -12,7 +12,7 @@ All notable changes to this project are documented in this file.
 - Added **Test Free Proxy**, a manual-only diagnostic workflow that verifies free-proxy availability without writing JSON files, pushing data, or triggering a fallback.
 - Added workflow concurrency protection and modernized Actions setup with `actions/checkout@v4`, `actions/setup-python@v5`, Python 3.12, and pip caching.
 - Improved crawler resilience with explicit `GOOGLE_SCHOLAR_ID` validation, incremental retry backoff, clearer error logging, atomic JSON writes, and safer publication-ID handling.
-- Bounded Scholar request retries and timeouts, added an 8-minute per-attempt watchdog, added unbuffered workflow logs, and capped data-fetch runs at 45 minutes to prevent blocked requests from consuming the GitHub Actions six-hour job limit.
+- Bounded Scholar request retries and timeouts, added an 8-minute isolated-process watchdog for direct access, added unbuffered workflow logs, and capped data-fetch runs at 45 minutes to prevent blocked requests from consuming the GitHub Actions six-hour job limit.
 - Reused the successful proxy-test lookup during a normal proxy crawl to avoid an unnecessary Google Scholar request.
 
 ### Compatibility
