@@ -44,19 +44,24 @@ Windows PowerShell:
 
 ```powershell
 cd google_scholar_crawler
-python -m pip install -r requirements.txt
-python main.py --author-id YOUR_GOOGLE_SCHOLAR_ID
-python publish_results.py
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --no-cache-dir -r requirements.txt
+.\.venv\Scripts\python.exe main.py --author-id YOUR_GOOGLE_SCHOLAR_ID
+.\.venv\Scripts\python.exe publish_results.py
 ```
 
 macOS/Linux:
 
 ```bash
 cd google_scholar_crawler
-python3 -m pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --no-cache-dir -r requirements.txt
 python3 main.py --author-id YOUR_GOOGLE_SCHOLAR_ID
 python3 publish_results.py
 ```
+
+The `.venv` directory contains an isolated Python environment for this project and is ignored by Git. The PowerShell commands above call its Python executable directly, so they work even when script activation is restricted. In Command Prompt, you can activate it with `.venv\\Scripts\\activate.bat` if preferred.
 
 `YOUR_GOOGLE_SCHOLAR_ID` is the value after `user=` in your public Google Scholar profile URL. You may instead set `GOOGLE_SCHOLAR_ID`; `--author-id` takes precedence.
 
