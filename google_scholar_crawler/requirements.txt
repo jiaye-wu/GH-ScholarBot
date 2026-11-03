@@ -1,3 +1,4 @@
 jsonpickle==4.0.5
 scholarly==1.4.4
 httpx==0.24.1
+bibtexparser==1.4.4
